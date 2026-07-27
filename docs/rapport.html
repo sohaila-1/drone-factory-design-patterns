@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Rapport — Usine de drones</title>
+<style>
+  :root {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --ink: #1b2430;
+    --muted: #57626c;
+    --accent: #2f7a9e;
+    --accent-soft: #e4eef2;
+    --line: #d6dcd8;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --serif: "Source Serif Pro", "Source Serif 4", Georgia, "Iowan Old Style", serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10151b;
+      --surface: #171e26;
+      --ink: #e7ecef;
+      --muted: #93a0ab;
+      --accent: #5fb3d9;
+      --accent-soft: #1b2c34;
+      --line: #263039;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10151b;
+    --surface: #171e26;
+    --ink: #e7ecef;
+    --muted: #93a0ab;
+    --accent: #5fb3d9;
+    --accent-soft: #1b2c34;
+    --line: #263039;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1ee;
+    --surface: #ffffff;
+    --ink: #1b2430;
+    --muted: #57626c;
+    --accent: #2f7a9e;
+    --accent-soft: #e4eef2;
+    --line: #d6dcd8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 92vh;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 3.5rem;
+  }
+
+  .cover .kicker {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1.2rem;
+  }
+
+  .cover h1 {
+    font-family: var(--mono);
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  .cover p.subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1.15rem;
+    max-width: 46ch;
+    margin: 0 0 2.5rem;
+  }
+
+  .cover dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.4rem 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .cover dt { text-transform: uppercase; letter-spacing: 0.08em; }
+  .cover dd { margin: 0; color: var(--ink); }
+
+  section { margin-bottom: 3.2rem; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.6rem;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.4rem;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h2 {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.1rem;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    margin: 1.8rem 0 0.6rem;
+    color: var(--ink);
+  }
+
+  p { margin: 0 0 1rem; max-width: 68ch; }
+
+  ul, ol { max-width: 66ch; padding-left: 1.3rem; margin: 0 0 1rem; }
+  li { margin-bottom: 0.4rem; }
+
+  code, .code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--accent-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+
+  .pattern {
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: 0 6px 6px 0;
+    padding: 1.1rem 1.4rem;
+    margin: 1.2rem 0;
+  }
+  .pattern .name {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.5rem;
+  }
+  .pattern p:last-child { margin-bottom: 0; }
+
+  .stage-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 1rem 0 1.5rem;
+  }
+  .stage-table th, .stage-table td {
+    text-align: left;
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .stage-table th {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .stage-table td.tag { font-family: var(--mono); color: var(--accent); white-space: nowrap; }
+
+  .problem {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr;
+    gap: 0.2rem 0.9rem;
+    margin: 1.4rem 0;
+  }
+  .problem .num {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 0.85rem;
+    padding-top: 0.15rem;
+  }
+  .problem h4 {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    margin: 0 0 0.35rem;
+    grid-column: 2;
+  }
+  .problem .body { grid-column: 2; }
+  .problem .body p { margin: 0 0 0.5rem; }
+  .problem .label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media print {
+    body { background: #fff; color: #1b2430; }
+    .cover { min-height: 90vh; page-break-after: always; }
+    section { page-break-inside: avoid; }
+    .page { padding: 0 0.4in; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <p class="kicker">Projet Design Patterns en C# — Rapport</p>
+    <h1>Usine de drones :<br>de l'implémentation naïve<br>aux design patterns</h1>
+    <p class="subtitle">Choix techniques, patterns retenus et écartés, problèmes rencontrés et solutions — étapes 1 à 3.</p>
+    <dl>
+      <dt>Sujet</dt><dd>Système d'assemblage de drones piloté par instructions texte</dd>
+      <dt>Langage</dt><dd>C# (.NET SDK, multiplateforme)</dd>
+      <dt>Étapes couvertes</dt><dd>1 · Implémentation naïve — 2 · Design patterns — 3 · Modules complémentaires</dd>
+      <dt>Dépôt</dt><dd>tags <code>etape-1</code>, <code>etape-2</code>, <code>etape-3</code></dd>
+    </dl>
+  </div>
+
+  <section>
+    <p class="eyebrow">Introduction</p>
+    <h2>Objectif et déroulement</h2>
+    <p>Le projet consiste à écrire un programme qui pilote l'assemblage de drones dans une usine :
+    suivi du stock de pièces, calcul des besoins d'une commande, génération des instructions
+    d'assemblage, vérification et production. Le sujet impose une progression en trois temps :
+    une implémentation naïve pour poser le problème, un refactoring en design patterns, puis
+    l'ajout de modules complémentaires. Ce rapport suit ce découpage et explique, pour chaque
+    étape, ce qui a été fait et pourquoi.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 1</p>
+    <h2>Implémentation naïve et ses limites</h2>
+    <p>La première version tient dans un unique <code>Program.cs</code> : des dictionnaires
+    statiques pour le stock de pièces et de drones, un grand bloc <code>if / else</code> qui
+    interprète chaque instruction utilisateur, et une méthode qui imprime en dur la séquence
+    d'assemblage d'un drone à cinq pièces fixes.</p>
+    <p>Cette version répond au sujet mais montre vite ses limites : ajouter une instruction
+    alourdit le même bloc de code déjà chargé ; <code>ADD_TEMPLATE</code> n'est qu'un message
+    d'erreur en attendant l'étape suivante ; rien ne distingue le stock, la validation des
+    commandes et la génération des instructions, ce qui rend chaque modification risquée pour
+    le reste du programme. C'est précisément ce que l'étape 2 doit corriger.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 2</p>
+    <h2>Mise en place des design patterns</h2>
+    <p>Quatre patterns ont été retenus, chacun en réponse à un problème concret rencontré dans
+    le code de l'étape 1.</p>
+
+    <div class="pattern">
+      <p class="name">Command</p>
+      <p><strong>Problème :</strong> le dispatcher <code>if / else</code> centralisait toute la
+      logique des six instructions utilisateur dans une seule méthode.</p>
+      <p><strong>Solution :</strong> chaque instruction (<code>STOCKS</code>, <code>NEEDED_STOCKS</code>,
+      <code>INSTRUCTIONS</code>, <code>VERIFY</code>, <code>PRODUCE</code>, <code>ADD_TEMPLATE</code>,
+      puis <code>RECEIVE</code> et <code>GET_MOVEMENTS</code> à l'étape 3) devient une classe
+      <code>ICommand</code>, enregistrée par son nom dans un <code>CommandRegistry</code>.
+      Ajouter une instruction revient à écrire une classe de plus, sans toucher au dispatcher
+      ni aux commandes existantes.</p>
+    </div>
+
+    <div class="pattern">
+      <p class="name">Strategy</p>
+      <p><strong>Problème :</strong> classer un drone dans une ou plusieurs catégories
+      (Aérien / Marin / Terrestre / Submersible) demande une règle différente par catégorie,
+      combinables et évolutives indépendamment.</p>
+      <p><strong>Solution :</strong> une classe par règle (<code>AerienRule</code>,
+      <code>MarinRule</code>, <code>TerrestreRule</code>, <code>SubmersibleRule</code>)
+      implémentant <code>ICategoryRule</code>, exécutées par un <code>DroneCategorizer</code>
+      qui retourne toutes les catégories satisfaites. Chaque règle se lit et se teste seule.</p>
+    </div>
+
+    <div class="pattern">
+      <p class="name">Builder</p>
+      <p><strong>Problème :</strong> la séquence d'instructions d'assemblage
+      (<code>GET_OUT_STOCK</code>, <code>INSTALL</code>, <code>ASSEMBLE</code>...) obéit à un
+      ordre imposé par le sujet (générateur avant module principal, déplacement après la coque,
+      système installé avant assemblage).</p>
+      <p><strong>Solution :</strong> <code>DroneAssemblyBuilder</code> encapsule cet ordre
+      derrière des méthodes chaînées. Son intérêt s'est confirmé à l'étape 3 : quand un drone a
+      pu avoir plusieurs générateurs ou modules de déplacement, seul le Builder a dû apprendre à
+      boucler sur une liste — aucun autre fichier n'a eu besoin de connaître l'ordre
+      d'assemblage.</p>
+    </div>
+
+    <div class="pattern">
+      <p class="name">Factory</p>
+      <p><strong>Problème :</strong> transformer une liste de noms de pièces en un
+      <code>DroneTemplate</code> valide demande d'identifier le rôle de chaque pièce, de
+      vérifier les règles de construction et de calculer les catégories — une logique que les
+      quatre drones initiaux et <code>ADD_TEMPLATE</code> doivent partager à l'identique.</p>
+      <p><strong>Solution :</strong> <code>DroneTemplateFactory</code> centralise cette
+      construction et cette validation, utilisée aussi bien à l'initialisation du programme que
+      pour chaque appel utilisateur à <code>ADD_TEMPLATE</code>.</p>
+    </div>
+
+    <h3>Patterns envisagés puis écartés</h3>
+    <ul>
+      <li><strong>Singleton</strong> pour le stock : écarté au profit d'une seule instance de
+      <code>StockRepository</code> créée dans <code>Program.cs</code> et transmise explicitement
+      aux commandes qui en ont besoin. Même garantie d'unicité, sans l'état global qui rend un
+      Singleton difficile à isoler pour des tests.</li>
+      <li><strong>Abstract Factory</strong> : écarté au profit d'une Factory simple, car le
+      projet ne construit qu'une seule famille de produits (des <code>DroneTemplate</code>), pas
+      plusieurs familles cohérentes à faire varier ensemble.</li>
+      <li><strong>Observer</strong> pour la traçabilité des flux (étape 3) : envisagé pour
+      notifier un journal à chaque mouvement de stock, puis écarté — un seul type d'abonné (le
+      journal lui-même) ne justifiait pas l'indirection d'un vrai pattern Observer ;
+      <code>StockRepository</code> enregistre directement chaque mouvement.</li>
+    </ul>
+
+    <h3>4.2 — Catégorisation des drones</h3>
+    <p>Chaque catégorie combine des contraintes sur la coque, le système installé et les
+    modules de déplacement. Deux points du sujet n'étaient pas explicites et ont demandé un
+    choix documenté : la règle « un module de déplacement (X) » est satisfaite dès qu'au
+    <em>moins un</em> module de déplacement porte le tag X (utile une fois les drones à
+    plusieurs modules autorisés en étape 3) ; et pour Submersible, « toutes les pièces (S) » ne
+    peut porter que sur la coque, les générateurs et les modules de déplacement, car ce sont les
+    seules pièces du catalogue à porter la dimension F/M/L/S (le module principal, le système et
+    le module de contrôle portent une dimension 2D/3D distincte).</p>
+
+    <h3>4.3 — <code>ADD_TEMPLATE</code></h3>
+    <p>Le sujet ne précise pas si le système principal fait partie de la liste de pièces
+    d'<code>ADD_TEMPLATE</code>. Le choix retenu est de l'y inclure au même titre que la coque
+    ou le générateur : le rôle de chaque pièce est déduit automatiquement du catalogue, ce qui
+    évite d'introduire une syntaxe différente pour ce seul cas.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 3</p>
+    <h2>Modules complémentaires</h2>
+    <p>Deux modules ont été choisis parmi ceux proposés, auxquels s'ajoutent deux prérequis
+    transverses imposés par le sujet pour cette phase.</p>
+
+    <table class="stage-table">
+      <thead>
+        <tr><th>Élément</th><th>Statut</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="tag">5.1.1</td><td>Prérequis</td><td>Réception de stock — <code>RECEIVE ARGS</code></td></tr>
+        <tr><td class="tag">5.1.2</td><td>Prérequis</td><td>Jusqu'à 2 générateurs / 3 modules de déplacement, avec règle de couplage</td></tr>
+        <tr><td class="tag">5.2.1</td><td>Module choisi</td><td>Modification de drones — <code>WITH</code> / <code>WITHOUT</code> / <code>REPLACE</code></td></tr>
+        <tr><td class="tag">5.2.3</td><td>Module choisi</td><td>Traçabilité des flux — <code>GET_MOVEMENTS</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>Le prérequis 5.1.2 s'est avéré être une dépendance technique du module de modification :
+    <code>WITH</code>/<code>WITHOUT</code> pouvant ajouter ou retirer des générateurs ou des
+    modules de déplacement, <code>DroneTemplate</code> devait d'abord accepter plusieurs pièces
+    par rôle avant que ces instructions aient un sens à valider. Les deux ont donc été traités
+    dans la même passe : <code>ConstructionRules</code> centralise la règle (1 à 2 générateurs,
+    1 à 3 modules de déplacement, 2 générateurs obligatoires dès 2 modules de déplacement) et
+    est réutilisée aussi bien par <code>DroneTemplateFactory</code> que par le calcul des
+    modifications.</p>
+
+    <p>Pour <code>WITH</code>/<code>WITHOUT</code>/<code>REPLACE</code>, le séparateur passe de
+    la virgule au point-virgule dès qu'un de ces mots-clés apparaît dans la commande — l'ancien
+    format reste accepté tel quel en leur absence. Les modifications s'appliquent une fois par
+    ligne de commande, affectent <code>NEEDED_STOCKS</code>, <code>VERIFY</code> et
+    <code>PRODUCE</code>, et déclenchent une revalidation de la règle de construction dès
+    qu'elles touchent un générateur ou un module de déplacement. Le sujet ne fournissant aucun
+    exemple de sortie <code>INSTRUCTIONS</code> avec modificateurs, cette commande continue
+    d'imprimer la séquence du template de base — limitation assumée et documentée plutôt que
+    comblée par une supposition non vérifiable.</p>
+
+    <p>La traçabilité repose sur un principe simple : chaque méthode de
+    <code>StockRepository</code> qui modifie le stock (<code>RemovePieces</code>,
+    <code>AddPiece</code>, <code>AddDrones</code>) enregistre un mouvement horodaté avec un
+    motif (<code>PRODUCE</code>, <code>RECEIVE</code>). <code>GET_MOVEMENTS</code> lit
+    simplement ce journal, en entier ou filtré sur une liste d'éléments.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Bilan technique</p>
+    <h2>Problèmes rencontrés et solutions</h2>
+
+    <div class="problem">
+      <span class="num">01</span>
+      <h4>Build incompatible avec la machine de développement</h4>
+      <div class="body">
+        <p class="label">Constat</p>
+        <p>Le script de build initial appelait <code>csc.exe</code> de .NET Framework via un
+        chemin Windows (<code>$env:WINDIR</code>), inutilisable sur macOS.</p>
+        <p class="label">Solution</p>
+        <p>Migration vers un projet SDK <code>dotnet</code> standard (<code>.csproj</code>),
+        multiplateforme, qui compile automatiquement tous les fichiers du dossier — un
+        prérequis de toute façon nécessaire pour répartir le code en plusieurs classes.</p>
+      </div>
+    </div>
+
+    <div class="problem">
+      <span class="num">02</span>
+      <h4>Version du runtime .NET disponible</h4>
+      <div class="body">
+        <p class="label">Constat</p>
+        <p>Seul le runtime .NET 10 était installé localement, pas de .NET 8 (LTS).</p>
+        <p class="label">Solution</p>
+        <p>Cible ajustée à <code>net10.0</code> pour permettre la compilation et l'exécution
+        locales ; point à revérifier sur la machine utilisée pour la notation.</p>
+      </div>
+    </div>
+
+    <div class="problem">
+      <span class="num">03</span>
+      <h4>Dépôt git mal isolé</h4>
+      <div class="body">
+        <p class="label">Constat</p>
+        <p>Le dossier de travail se trouvait initialement à l'intérieur d'un dépôt git racine
+        au niveau du dossier utilisateur, mêlant ce projet à d'autres dossiers sans rapport.</p>
+        <p class="label">Solution</p>
+        <p>Un dépôt git indépendant a été initialisé directement dans le dossier du projet, avec
+        son propre remote, pour ne versionner que les fichiers du projet.</p>
+      </div>
+    </div>
+
+    <div class="problem">
+      <span class="num">04</span>
+      <h4>Points du sujet non spécifiés</h4>
+      <div class="body">
+        <p class="label">Constat</p>
+        <p>Plusieurs comportements ne sont pas explicitement décrits par le sujet : contenu
+        exact des arguments d'<code>ADD_TEMPLATE</code>, portée de
+        <code>WITH</code>/<code>WITHOUT</code> sur <code>INSTRUCTIONS</code>, format de sortie
+        de <code>GET_MOVEMENTS</code>, interprétation de « toutes les pièces (S) » pour la
+        catégorie Submersible.</p>
+        <p class="label">Solution</p>
+        <p>Plutôt que deviner silencieusement, chaque choix a été explicité dans le fichier
+        <code>README.md</code> du projet (section « Hypothèses de cette version »), pour rester
+        justifiable en soutenance et permettre de revenir dessus si besoin.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Conclusion</p>
+    <h2>Bilan</h2>
+    <p>Le projet couvre les trois phases demandées : une implémentation naïve fonctionnelle, un
+    refactoring en quatre design patterns justifiés (Command, Strategy, Builder, Factory) avec
+    catégorisation des drones et templates dynamiques, puis deux modules complémentaires
+    (modification de drones, traçabilité des flux) construits sur les prérequis de contraintes
+    de construction et de réception de stock. Chaque étape a été vérifiée manuellement en
+    rejouant les scénarios du sujet et des cas limites, et le code compile sans erreur à chaque
+    étape taguée du dépôt.</p>
+  </section>
+
+  <footer>
+    <span>Usine de drones — Projet Design Patterns C#</span>
+    <span>etape-1 · etape-2 · etape-3</span>
+  </footer>
+
+</div>
+</body>
+</html>

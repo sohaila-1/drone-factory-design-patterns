@@ -27,7 +27,17 @@ namespace DroneFactory.Commands
                 return;
             }
 
-            StockProblem problem = _calculator.FindFirstStockProblem(order.Items, _stocks);
+            StockProblem problem;
+            try
+            {
+                problem = _calculator.FindFirstStockProblem(order.Items, _stocks);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("ERROR " + ex.Message);
+                return;
+            }
+
             Console.WriteLine(problem == null ? "AVAILABLE" : "UNAVAILABLE");
         }
     }
@@ -54,7 +64,26 @@ namespace DroneFactory.Commands
                 return;
             }
 
-            StockProblem problem = _calculator.FindFirstStockProblem(order.Items, _stocks);
+            StockProblem problem;
+            Dictionary<string, int> totalNeeds;
+            try
+            {
+                problem = _calculator.FindFirstStockProblem(order.Items, _stocks);
+                if (problem == null)
+                {
+                    totalNeeds = _calculator.CountTotalNeeds(order.Items);
+                }
+                else
+                {
+                    totalNeeds = null;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("ERROR " + ex.Message);
+                return;
+            }
+
             if (problem != null)
             {
                 Console.WriteLine("ERROR insufficient stock for " + problem.PieceName
@@ -63,12 +92,11 @@ namespace DroneFactory.Commands
                 return;
             }
 
-            Dictionary<string, int> totalNeeds = _calculator.CountTotalNeeds(order.Items);
-            _stocks.RemovePieces(totalNeeds);
+            _stocks.RemovePieces(totalNeeds, "PRODUCE");
 
             foreach (OrderLine item in order.Items)
             {
-                _stocks.AddDrones(item.DroneName, item.Quantity);
+                _stocks.AddDrones(item.DroneName, item.Quantity, "PRODUCE");
             }
 
             Console.WriteLine("STOCK_UPDATED");

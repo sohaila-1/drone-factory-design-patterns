@@ -33,9 +33,21 @@ namespace DroneFactory.Assembly
             return this;
         }
 
+        public DroneAssemblyBuilder AttachExtraGenerator(string generator)
+        {
+            _lines.Add("ASSEMBLE TMP1 TMP1 " + generator);
+            return this;
+        }
+
         public DroneAssemblyBuilder AttachMoveModule(string move)
         {
             _lines.Add("ASSEMBLE TMP2 TMP1 " + move);
+            return this;
+        }
+
+        public DroneAssemblyBuilder AttachExtraMoveModule(string move)
+        {
+            _lines.Add("ASSEMBLE TMP2 TMP2 " + move);
             return this;
         }
 
@@ -64,16 +76,37 @@ namespace DroneFactory.Assembly
 
         public static List<string> BuildInstructions(DroneTemplate drone)
         {
-            return new DroneAssemblyBuilder()
+            DroneAssemblyBuilder builder = new DroneAssemblyBuilder()
                 .Begin(drone.Name)
                 .GetOutOfStock(drone.Hull)
-                .GetOutOfStock(drone.Core)
-                .GetOutOfStock(drone.Generator)
-                .GetOutOfStock(drone.Move)
-                .GetOutOfStock(drone.Processor)
-                .InstallSystem(drone.System, drone.Core)
-                .AssembleHullWithGenerator(drone.Hull, drone.Generator)
-                .AttachMoveModule(drone.Move)
+                .GetOutOfStock(drone.Core);
+
+            for (int i = 0; i < drone.Generators.Count; i++)
+            {
+                builder.GetOutOfStock(drone.Generators[i]);
+            }
+
+            for (int i = 0; i < drone.Moves.Count; i++)
+            {
+                builder.GetOutOfStock(drone.Moves[i]);
+            }
+
+            builder.GetOutOfStock(drone.Processor);
+            builder.InstallSystem(drone.System, drone.Core);
+
+            builder.AssembleHullWithGenerator(drone.Hull, drone.Generators[0]);
+            for (int i = 1; i < drone.Generators.Count; i++)
+            {
+                builder.AttachExtraGenerator(drone.Generators[i]);
+            }
+
+            builder.AttachMoveModule(drone.Moves[0]);
+            for (int i = 1; i < drone.Moves.Count; i++)
+            {
+                builder.AttachExtraMoveModule(drone.Moves[i]);
+            }
+
+            return builder
                 .AttachCore()
                 .AttachProcessor(drone.Processor)
                 .Finish(drone.Name)

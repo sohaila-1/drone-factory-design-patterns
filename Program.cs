@@ -76,7 +76,7 @@ namespace DroneFactory
             StockRepository stocks,
             DroneTemplateFactory templateFactory)
         {
-            OrderParser orderParser = new OrderParser(templates);
+            OrderParser orderParser = new OrderParser(templates, catalog);
             OrderCalculator calculator = new OrderCalculator(catalog, templates);
 
             CommandRegistry registry = new CommandRegistry();
@@ -86,6 +86,8 @@ namespace DroneFactory
             registry.Register("VERIFY", new VerifyCommand(orderParser, calculator, stocks));
             registry.Register("PRODUCE", new ProduceCommand(orderParser, calculator, stocks));
             registry.Register("ADD_TEMPLATE", new AddTemplateCommand(templateFactory, templates));
+            registry.Register("RECEIVE", new ReceiveCommand(catalog, templates, stocks));
+            registry.Register("GET_MOVEMENTS", new GetMovementsCommand(stocks));
             return registry;
         }
 
@@ -116,7 +118,7 @@ namespace DroneFactory
         {
             Console.WriteLine("DroneFactory pret.");
             Console.WriteLine("Tape une commande, par exemple : STOCKS");
-            Console.WriteLine("Commandes : STOCKS, NEEDED_STOCKS, INSTRUCTIONS, VERIFY, PRODUCE, ADD_TEMPLATE");
+            Console.WriteLine("Commandes : STOCKS, NEEDED_STOCKS, INSTRUCTIONS, VERIFY, PRODUCE, ADD_TEMPLATE, RECEIVE, GET_MOVEMENTS");
             Console.WriteLine("Quitter : EXIT ou QUIT");
         }
 

@@ -59,15 +59,27 @@ namespace DroneFactory.Commands
 
             Dictionary<string, int> totalNeeds = _calculator.EmptyPieceQuantities();
 
-            foreach (OrderLine item in order.Items)
+            try
             {
-                DroneTemplate drone = _templates.Get(item.DroneName);
-                Dictionary<string, int> droneNeeds = _calculator.CountPiecesForDrone(drone, item.Quantity);
+                foreach (OrderLine item in order.Items)
+                {
+                    DroneTemplate drone = _templates.Get(item.DroneName);
+                    Dictionary<string, int> droneNeeds = _calculator.CountPiecesForDrone(drone, item.Quantity);
+                    if (item.Modifications.Count > 0)
+                    {
+                        _calculator.ApplyModifications(droneNeeds, drone, item.Modifications);
+                    }
 
-                Console.WriteLine(item.Quantity + " " + drone.Name + " :");
-                _calculator.PrintNonZeroPieceQuantities(droneNeeds);
+                    Console.WriteLine(item.Quantity + " " + drone.Name + " :");
+                    _calculator.PrintNonZeroPieceQuantities(droneNeeds);
 
-                _calculator.AddPieceQuantities(totalNeeds, droneNeeds);
+                    _calculator.AddPieceQuantities(totalNeeds, droneNeeds);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("ERROR " + ex.Message);
+                return;
             }
 
             Console.WriteLine("Total :");

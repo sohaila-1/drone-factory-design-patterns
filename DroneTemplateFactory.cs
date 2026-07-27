@@ -22,9 +22,9 @@ namespace DroneFactory
             string hull = null;
             string core = null;
             string system = null;
-            string generator = null;
-            string move = null;
             string processor = null;
+            List<string> generators = new List<string>();
+            List<string> moves = new List<string>();
 
             foreach (string pieceName in pieceNames)
             {
@@ -46,10 +46,10 @@ namespace DroneFactory
                         AssignOnce(ref system, piece.Name, "systeme");
                         break;
                     case PieceKind.Generator:
-                        AssignOnce(ref generator, piece.Name, "generateur");
+                        generators.Add(piece.Name);
                         break;
                     case PieceKind.Move:
-                        AssignOnce(ref move, piece.Name, "module de deplacement");
+                        moves.Add(piece.Name);
                         break;
                     case PieceKind.Processor:
                         AssignOnce(ref processor, piece.Name, "module de controle");
@@ -60,11 +60,15 @@ namespace DroneFactory
             RequirePresent(hull, "coque (Hull)");
             RequirePresent(core, "module principal (Core)");
             RequirePresent(system, "systeme");
-            RequirePresent(generator, "generateur");
-            RequirePresent(move, "module de deplacement");
             RequirePresent(processor, "module de controle");
 
-            DroneTemplate template = new DroneTemplate(name, hull, core, system, generator, move, processor);
+            string constructionError = ConstructionRules.Validate(generators.Count, moves.Count);
+            if (constructionError != null)
+            {
+                throw new ArgumentException(constructionError);
+            }
+
+            DroneTemplate template = new DroneTemplate(name, hull, core, system, generators, moves, processor);
             List<DroneCategory> categories = _categorizer.Categorize(template);
 
             if (categories.Count == 0)
